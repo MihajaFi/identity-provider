@@ -7,30 +7,34 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 
 @RestController
-@RequestMapping("/api")
 public class AuthController {
-
+    @CrossOrigin(origins = "https://identity-983fa.web.app/")
     @GetMapping("/public")
     public ResponseEntity<Void> publicEndpoint() {
-        String firebaseAuthUiUrl = "https://identity-983fa.firebaseapp.com/__/auth/handler";
+        String firebaseAuthUiUrl = "https://identity-983fa.firebaseapp.com";
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, firebaseAuthUiUrl)
                 .build();
     }
 
-
+    @CrossOrigin(origins = "https://identity-983fa.web.app/")
     @GetMapping("/private")
-    public ResponseEntity<String> privateEndpoint(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> privateEndpoint(@RequestParam("token") String token) {
         try {
-            String idToken = token.replace("Bearer ", "");
 
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
             String uid = decodedToken.getUid();
+
             return ResponseEntity.ok("Hello, authenticated user! Your UID is: " + uid);
         } catch (FirebaseAuthException e) {
+            System.err.println("error: " + e.getMessage());
             return ResponseEntity.status(401).body("Unauthorized: Invalid or expired token.");
         }
     }
+
+
 }
