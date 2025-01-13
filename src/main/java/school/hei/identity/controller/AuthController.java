@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @RestController
 public class AuthController {
     @CrossOrigin(origins = "https://identity-983fa.web.app/")
-    @GetMapping("/public")
+    @GetMapping("/")
     public ResponseEntity<Void> publicEndpoint() {
         String firebaseAuthUiUrl = "https://identity-983fa.firebaseapp.com";
         return ResponseEntity.status(HttpStatus.FOUND)
